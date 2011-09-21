@@ -1,0 +1,24 @@
+package br.com.dextra.security.exceptions;
+
+import static br.com.dextra.security.utils.StringConcatUtil.concat;
+
+import java.text.ParseException;
+
+import br.com.dextra.security.AuthenticationData;
+
+public class InvalidAuthTokenException extends Exception {
+
+	private static final long serialVersionUID = 3429938665478651312L;
+
+	public InvalidAuthTokenException(AuthenticationData authData) {
+		super(concat("Invalid token : ", authData));
+	}
+
+	public InvalidAuthTokenException(ParseException e, String token) {
+		super(concat("Invalid token : ", token), e);
+	}
+
+	public InvalidAuthTokenException(String token) {
+		super(concat("Invalid token : ", token));
+	}
+}
