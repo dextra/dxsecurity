@@ -81,6 +81,10 @@ public class AuthenticationData implements Serializable {
 		return provider;
 	}
 
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+
 	@Override
 	public String toString() {
 		return MessageFormat.format("{0}|{1}|{2}", username, provider, timestampAsString);

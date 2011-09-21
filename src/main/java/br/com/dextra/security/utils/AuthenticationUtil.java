@@ -12,14 +12,13 @@ public class AuthenticationUtil {
 
 	public static String sign(AuthenticationData data, CertificateRepository certificateRepository) {
 		String authData = data.toString();
-		String signature = sign(authData, certificateRepository);
-		authData = AuthenticationData.concatSignature(authData, signature);
 
+		String signature = sign(authData, certificateRepository);
 		if (!verify(data, signature, certificateRepository)) {
 			throw new RuntimeException("Missed public and private keys.");
 		}
 
-		return authData;
+		return signature;
 	}
 
 	public static boolean verify(AuthenticationData authData, String signature, CertificateRepository certificateRepository) {

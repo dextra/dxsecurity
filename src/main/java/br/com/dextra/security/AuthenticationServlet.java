@@ -61,11 +61,15 @@ public abstract class AuthenticationServlet extends HttpServlet {
 
 		try {
 			AuthenticationData data = authenticate(req);
+			String authData = data.toString();
 
-			logger.info("User authenticated (cookie) as {}", data);
+			logger.info("User authenticated (cookie) as {}", authData);
 
-			String authData = generateAuthenticationDataString(data);
+			String signature = generateAuthenticationDataString(data);
+			data.setSignature(signature);
+			AuthenticationDataHolder.register(data);
 
+			authData = AuthenticationData.concatSignature(authData, signature);
 			createAuthCookie(authData, req, resp, configuration.getCookieExpiryTimeout());
 
 			sendSuccess(authData, req, resp);
