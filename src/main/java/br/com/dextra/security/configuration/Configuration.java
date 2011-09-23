@@ -87,6 +87,7 @@ public class Configuration {
 
 	public void setMyProvider(String myProvider) {
 		this.myProvider = myProvider;
+		this.getAllowedProviders().add(myProvider);
 	}
 
 	public Set<String> getAllowedProviders() {
