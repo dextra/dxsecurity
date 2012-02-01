@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.dextra.security.exceptions.ConfigurationException;
 import bsh.EvalError;
 import bsh.Interpreter;
 

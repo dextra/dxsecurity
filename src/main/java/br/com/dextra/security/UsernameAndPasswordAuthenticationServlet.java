@@ -12,13 +12,13 @@ public abstract class UsernameAndPasswordAuthenticationServlet extends Authentic
 	private static final String PASSWORD_KEY = "password";
 
 	@Override
-	protected AuthenticationData authenticate(HttpServletRequest req) throws AuthenticationFailedException {
+	protected Credential authenticate(HttpServletRequest req) throws AuthenticationFailedException {
 		String username = req.getParameter(USERNAME_KEY);
 		String password = req.getParameter(PASSWORD_KEY);
 
 		return authenticate(req, username, password);
 	}
 
-	protected abstract AuthenticationData authenticate(HttpServletRequest req, String username, String password)
+	protected abstract Credential authenticate(HttpServletRequest req, String username, String password)
 			throws AuthenticationFailedException;
 }

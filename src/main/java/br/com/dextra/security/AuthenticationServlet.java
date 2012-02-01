@@ -60,19 +60,19 @@ public abstract class AuthenticationServlet extends HttpServlet {
 		clearCachesIfRequestParameter(req);
 
 		try {
-			AuthenticationData data = authenticate(req);
-			String authData = data.toString();
+			Credential credential = authenticate(req);
+			String token = credential.toString();
 
-			logger.info("User authenticated (cookie) as {}", authData);
+			logger.info("User authenticated as {}", token);
 
-			String signature = generateAuthenticationDataString(data);
-			data.setSignature(signature);
-			AuthenticationDataHolder.register(data);
+			String signature = generateAuthenticationDataString(credential);
+			credential.setSignature(signature);
+			CredentialHolder.register(credential);
 
-			authData = AuthenticationData.concatSignature(authData, signature);
-			createAuthCookie(authData, req, resp, configuration.getCookieExpiryTimeout());
+			token = Credential.concatSignature(token, signature);
+			createAuthCookie(token, req, resp, configuration.getCookieExpiryTimeout());
 
-			sendSuccess(authData, req, resp);
+			sendSuccess(token, req, resp);
 		} catch (AuthenticationFailedException e) {
 			logger.debug("Authentication failed.", e);
 			sendError(e, req, resp);
@@ -93,12 +93,12 @@ public abstract class AuthenticationServlet extends HttpServlet {
 		}
 	}
 
-	protected void sendSuccess(String authData, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	protected void sendSuccess(String token, HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		configuration.getAuthenticationSuccessHandler().sendResponse(req, resp);
 	}
 
-	public static void createAuthCookie(String authData, HttpServletRequest req, HttpServletResponse resp, int cookieExpiryTimeout) {
-		Cookie authCookie = new Cookie(generateCookieName(), authData);
+	public static void createAuthCookie(String token, HttpServletRequest req, HttpServletResponse resp, int cookieExpiryTimeout) {
+		Cookie authCookie = new Cookie(generateCookieName(), token);
 
 		String path = generateCookiePath(req);
 
@@ -122,9 +122,9 @@ public abstract class AuthenticationServlet extends HttpServlet {
 		return AUTH_COOKIE_NAME + System.currentTimeMillis();
 	}
 
-	protected String generateAuthenticationDataString(AuthenticationData data) {
-		return AuthenticationUtil.sign(data, configuration.getCertificateRepository());
+	protected String generateAuthenticationDataString(Credential credential) {
+		return AuthenticationUtil.sign(credential, configuration.getCertificateRepository());
 	}
 
-	protected abstract AuthenticationData authenticate(HttpServletRequest req) throws AuthenticationFailedException;
+	protected abstract Credential authenticate(HttpServletRequest req) throws AuthenticationFailedException;
 }

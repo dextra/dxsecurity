@@ -11,6 +11,9 @@ import java.security.SecureRandom;
 
 import org.apache.commons.codec.binary.Base64;
 
+import br.com.dextra.security.Credential;
+import br.com.dextra.security.configuration.StringBase64CertificateRepository;
+
 public class GenerateKeysUtil {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException, IOException {
@@ -28,6 +31,14 @@ public class GenerateKeysUtil {
 
         store(pair.getPublic().getEncoded(), path + "/public.key");
         store(pair.getPrivate().getEncoded(), path + "/private.key");
+        
+        StringBase64CertificateRepository repo = new StringBase64CertificateRepository();
+        repo.configurePrivateKey(new String(Base64.encodeBase64(pair.getPrivate().getEncoded())));
+        repo.configurePublicKey("Test", new String(Base64.encodeBase64(pair.getPublic().getEncoded())));
+
+        Credential credential = new Credential("user", "Test");
+		String signature = AuthenticationUtil.sign(credential, repo);
+		System.out.println(Credential.concatSignature(credential.toString(), signature));
     }
 
     private static void show(String s, byte[] encoded) {

@@ -10,27 +10,28 @@ import org.joda.time.format.DateTimeFormatter;
 
 import br.com.dextra.security.exceptions.TimestampParsingException;
 
-public class AuthenticationData implements Serializable {
+public class Credential implements Serializable {
 
 	private static final long serialVersionUID = 4913986898213824694L;
 
 	protected static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyyMMdd.HHmmssSSS");
 
 	private String username;
+	private String provider;
 	private Date timestamp;
 	private String timestampAsString;
-	private String provider;
+
 	private transient String signature;
 	private transient String token;
 
-	public AuthenticationData(String username, String provider) {
+	public Credential(String username, String provider) {
 		super();
 		this.username = username;
 		this.provider = provider;
 		setTimestamp();
 	}
 
-	public AuthenticationData(String username, String provider, String timestamp, String signature, String token) throws ParseException {
+	public Credential(String username, String provider, String timestamp, String signature, String token) throws ParseException {
 		this.username = username;
 		this.provider = provider;
 		this.signature = signature;
@@ -81,7 +82,7 @@ public class AuthenticationData implements Serializable {
 		return provider;
 	}
 
-	public void setSignature(String signature) {
+	protected void setSignature(String signature) {
 		this.signature = signature;
 	}
 
@@ -94,18 +95,18 @@ public class AuthenticationData implements Serializable {
 		return MessageFormat.format("{0}|{1}|{2}|{3}", username, provider, timestampAsString, signature);
 	}
 
-	public AuthenticationData renew() {
-		return new AuthenticationData(this.getUsername(), this.getProvider());
+	public Credential renew() {
+		return new Credential(this.getUsername(), this.getProvider());
 	}
 
-	public static AuthenticationData parse(String authToken) throws ParseException {
-		String[] tokens = splitTokens(authToken);
+	public static Credential parse(String token) throws ParseException {
+		String[] tokens = splitTokens(token);
 
-		return new AuthenticationData(tokens[0], tokens[1], tokens[2], tokens[3], authToken);
+		return new Credential(tokens[0], tokens[1], tokens[2], tokens[3], token);
 	}
 
-	public static String[] splitTokens(String authToken) {
-		String[] tokens = authToken.split("\\|");
+	public static String[] splitTokens(String token) {
+		String[] tokens = token.split("\\|");
 
 		return new String[] { tokens[0], tokens[1], tokens[2], fillTrailing(join(tokens, 3, tokens.length)) };
 	}
@@ -133,7 +134,7 @@ public class AuthenticationData implements Serializable {
 		return sb.toString();
 	}
 
-	public static String concatSignature(String authData, String signature) {
-		return MessageFormat.format("{0}|{1}", authData, signature);
+	public static String concatSignature(String token, String signature) {
+		return MessageFormat.format("{0}|{1}", token, signature);
 	}
 }

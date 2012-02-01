@@ -1,4 +1,4 @@
-package br.com.dextra.security.configuration;
+package br.com.dextra.security.exceptions;
 
 public class ConfigurationException extends RuntimeException {
 

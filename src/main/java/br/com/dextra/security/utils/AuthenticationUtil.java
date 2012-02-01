@@ -5,12 +5,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
 
-import br.com.dextra.security.AuthenticationData;
+import br.com.dextra.security.Credential;
 import br.com.dextra.security.configuration.CertificateRepository;
 
 public class AuthenticationUtil {
 
-	public static String sign(AuthenticationData data, CertificateRepository certificateRepository) {
+	public static String sign(Credential data, CertificateRepository certificateRepository) {
 		String authData = data.toString();
 
 		String signature = sign(authData, certificateRepository);
@@ -21,7 +21,7 @@ public class AuthenticationUtil {
 		return signature;
 	}
 
-	public static boolean verify(AuthenticationData authData, String signature, CertificateRepository certificateRepository) {
+	public static boolean verify(Credential authData, String signature, CertificateRepository certificateRepository) {
 		try {
 			Signature sig = Signature.getInstance("SHA1withDSA");
 			sig.initVerify(certificateRepository.getPublicKeyFor(authData.getProvider()));
