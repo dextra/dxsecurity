@@ -6,7 +6,7 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AuthenticationDataTest {
+public class CredentialTest {
 
 	@Test
 	public void testSplit() {
