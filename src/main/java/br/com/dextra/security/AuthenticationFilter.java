@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import br.com.dextra.security.configuration.Configuration;
 import br.com.dextra.security.exceptions.ExpiredAuthTokenException;
 import br.com.dextra.security.exceptions.InvalidAuthTokenException;
+import br.com.dextra.security.exceptions.TimestampParsingException;
 import br.com.dextra.security.utils.AuthenticationUtil;
 
 public class AuthenticationFilter implements Filter {
@@ -163,7 +164,7 @@ public class AuthenticationFilter implements Filter {
 			} else {
 				throw new InvalidAuthTokenException(credential);
 			}
-		} catch (ParseException e) {
+		} catch (TimestampParsingException e) {
 			throw new InvalidAuthTokenException(e, token);
 		}
 	}

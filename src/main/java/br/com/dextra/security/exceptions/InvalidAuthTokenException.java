@@ -1,9 +1,6 @@
 package br.com.dextra.security.exceptions;
 
 import static br.com.dextra.security.utils.StringConcatUtil.concat;
-
-import java.text.ParseException;
-
 import br.com.dextra.security.Credential;
 
 public class InvalidAuthTokenException extends Exception {
@@ -14,7 +11,7 @@ public class InvalidAuthTokenException extends Exception {
 		super(concat("Invalid token : ", authData));
 	}
 
-	public InvalidAuthTokenException(ParseException e, String token) {
+	public InvalidAuthTokenException(Exception e, String token) {
 		super(concat("Invalid token : ", token), e);
 	}
 

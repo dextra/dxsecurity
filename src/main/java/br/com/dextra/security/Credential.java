@@ -2,7 +2,6 @@ package br.com.dextra.security;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.util.Date;
 
 import org.joda.time.format.DateTimeFormat;
@@ -31,7 +30,7 @@ public class Credential implements Serializable {
 		setTimestamp();
 	}
 
-	public Credential(String username, String provider, String timestamp, String signature, String token) throws ParseException {
+	public Credential(String username, String provider, String timestamp, String signature, String token) {
 		this.username = username;
 		this.provider = provider;
 		this.signature = signature;
@@ -40,7 +39,7 @@ public class Credential implements Serializable {
 		setTimestamp(parseDate(timestamp), timestamp);
 	}
 
-	protected Date parseDate(String timestamp) throws ParseException {
+	protected Date parseDate(String timestamp) {
 		try {
 			return dateFormat.parseDateTime(timestamp).toDate();
 		} catch (Exception e) {
@@ -99,7 +98,7 @@ public class Credential implements Serializable {
 		return new Credential(this.getUsername(), this.getProvider());
 	}
 
-	public static Credential parse(String token) throws ParseException {
+	public static Credential parse(String token) {
 		String[] tokens = splitTokens(token);
 
 		return new Credential(tokens[0], tokens[1], tokens[2], tokens[3], token);
