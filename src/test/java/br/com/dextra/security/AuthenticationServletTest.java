@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import br.com.dextra.security.configuration.Configuration;
 import br.com.dextra.security.configuration.ForbiddenResponseHandler;
+import br.com.dextra.security.configuration.RedirectResponseHandler;
 import br.com.dextra.security.configuration.StringBase64CertificateRepository;
 import br.com.dextra.security.configuration.WriteTokenOnResponseResponseHandler;
 import br.com.dextra.security.exceptions.AuthenticationFailedException;
@@ -52,11 +53,12 @@ public class AuthenticationServletTest {
 		Assert.assertEquals(-1, resp.getError());
 		Assert.assertNull(resp.getRedirect());
 		Assert.assertTrue(resp.getResponse().startsWith("test|Test|"));
+		Assert.assertTrue(CredentialHolder.get().toString().startsWith("test|Test|"));
 	}
 
 	@Test
 	@SuppressWarnings("serial")
-	public void testFailedAuthentication() throws ServletException, IOException, NoSuchAlgorithmException,
+	public void testFailedAuthenticationWithForbidden() throws ServletException, IOException, NoSuchAlgorithmException,
 			NoSuchProviderException {
 		Configuration config = new Configuration();
 
@@ -87,5 +89,42 @@ public class AuthenticationServletTest {
 		Assert.assertEquals(403, resp.getError());
 		Assert.assertNull(resp.getRedirect());
 		Assert.assertEquals("", resp.getResponse());
+		Assert.assertNull(CredentialHolder.get());
+	}
+
+	@Test
+	@SuppressWarnings("serial")
+	public void testFailedAuthenticationWithRedirect() throws ServletException, IOException, NoSuchAlgorithmException,
+			NoSuchProviderException {
+		Configuration config = new Configuration();
+
+		StringBase64CertificateRepository certificateRepository = GenerateKeysUtil.generateKeys("Test");
+
+		config.setAllowedProviders("Test");
+		config.setNotAuthenticatedHandler(new RedirectResponseHandler("/redirectTo"));
+		config.setCertificateRepository(certificateRepository);
+		config.setCookieExpiryTimeout(1000);
+		config.setExpiryTimeout(1000);
+		config.setMyProvider("Test");
+		config.setRenewTimeout(1000);
+
+		AuthenticationServlet servlet = new AuthenticationServlet() {
+
+			@Override
+			protected Credential authenticate(HttpServletRequest req) throws AuthenticationFailedException {
+				throw new AuthenticationFailedException(false);
+			}
+		};
+		servlet.setConfiguration(config);
+
+		HttpServletRequestStub req = new HttpServletRequestStub();
+		HttpServletResponseStub resp = new HttpServletResponseStub();
+
+		servlet.doGet(req, resp);
+
+		Assert.assertEquals(-1, resp.getError());
+		Assert.assertEquals("/redirectTo", resp.getRedirect());
+		Assert.assertEquals("", resp.getResponse());
+		Assert.assertNull(CredentialHolder.get());
 	}
 }

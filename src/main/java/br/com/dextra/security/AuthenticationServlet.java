@@ -56,6 +56,7 @@ public abstract class AuthenticationServlet extends HttpServlet {
 	}
 
 	protected void startAuthentication(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		CredentialHolder.deregister();
 
 		clearCachesIfRequestParameter(req);
 
