@@ -126,5 +126,13 @@ public abstract class AuthenticationServlet extends HttpServlet {
 		return AuthenticationUtil.sign(credential, configuration.getCertificateRepository());
 	}
 
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
 	protected abstract Credential authenticate(HttpServletRequest req) throws AuthenticationFailedException;
 }

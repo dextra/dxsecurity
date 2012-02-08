@@ -95,8 +95,17 @@ public class Configuration {
 		return allowedProviders;
 	}
 
+	public void setAllowedProviders(String ... allowedProviders) {
+		Set<String> set = new HashSet<String>();
+		for (String allowedProvider : allowedProviders) {
+			set.add(allowedProvider);
+		}
+		setAllowedProviders(set);
+	}
+
 	public void setAllowedProviders(Set<String> allowedProviders) {
-		this.allowedProviders = allowedProviders;
+		this.allowedProviders = new HashSet<String>();
+		this.allowedProviders.addAll(allowedProviders);
 	}
 
 	public ResponseHandler getNotAuthenticatedHandler() {

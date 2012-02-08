@@ -12,7 +12,8 @@ import br.com.dextra.security.exceptions.TimestampParsingException;
 
 public class CredentialTest {
 
-	private static final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	private static final DateFormat dateFormat = new SimpleDateFormat(
+			"dd/MM/yyyy");
 
 	@Test
 	@SuppressWarnings("serial")
@@ -25,25 +26,52 @@ public class CredentialTest {
 			}
 		};
 
-		Assert.assertEquals("test|Test|20120207.000000000", credential.toString());
+		Assert.assertEquals("test|Test|20120207.000000000",
+				credential.toString());
 	}
 
 	@Test(expected = TimestampParsingException.class)
 	public void testCreateCredentialWithWrongTimestampFormat() {
-		new Credential("a", "Services", "20110706", "MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==",
+		Credential credential = new Credential(
+				"a",
+				"Services",
+				"20110706",
+				"MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==",
 				"a|Services|20110706.105225185|MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==");
+		credential.getTimestamp();
 	}
 
 	@Test
 	public void testCreateCredentialFromToken() {
-		Credential credential = new Credential("a", "Services", "20110706.105225185",
+		Credential credential = new Credential(
+				"a",
+				"Services",
+				"20110706.105225185",
 				"MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==",
 				"a|Services|20110706.105225185|MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==");
 
 		Assert.assertEquals("a", credential.getUsername());
 		Assert.assertEquals("Services", credential.getProvider());
-		Assert.assertEquals(Credential.dateFormat.parseDateTime("20110706.105225185").toDate(),
-				credential.getTimestamp());
+		Assert.assertEquals(
+				Credential.dateFormat.parseDateTime("20110706.105225185")
+						.toDate(), credential.getTimestamp());
+	}
+
+	@Test
+	public void testCreateParseToken() {
+		Credential credential = Credential
+				.parse("a|Services|20110706.105225185|MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==");
+
+		Assert.assertEquals("a", credential.getUsername());
+		Assert.assertEquals("Services", credential.getProvider());
+		Assert.assertEquals(
+				Credential.dateFormat.parseDateTime("20110706.105225185")
+						.toDate(), credential.getTimestamp());
+		Assert.assertEquals("a|Services|20110706.105225185",
+				credential.toString());
+		Assert.assertEquals(
+				"a|Services|20110706.105225185|MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==",
+				credential.toStringFull());
 	}
 
 	@Test
@@ -52,7 +80,7 @@ public class CredentialTest {
 		Date firstTimestamp = credential.getTimestamp();
 
 		Thread.sleep(100);
-		
+
 		credential = credential.renew();
 		Date secondTimestamp = credential.getTimestamp();
 
@@ -70,7 +98,9 @@ public class CredentialTest {
 		Assert.assertEquals("a", tokens[0]);
 		Assert.assertEquals("Services", tokens[1]);
 		Assert.assertEquals("20110706.105225185", tokens[2]);
-		Assert.assertEquals("MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==", tokens[3]);
+		Assert.assertEquals(
+				"MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==",
+				tokens[3]);
 	}
 
 	@Test
@@ -82,7 +112,9 @@ public class CredentialTest {
 		Assert.assertEquals("a", tokens[0]);
 		Assert.assertEquals("Services", tokens[1]);
 		Assert.assertEquals("20110706.105225185", tokens[2]);
-		Assert.assertEquals("MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgE|hy+yjh9L4fbvvH2wT3hq0g==", tokens[3]);
+		Assert.assertEquals(
+				"MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgE|hy+yjh9L4fbvvH2wT3hq0g==",
+				tokens[3]);
 	}
 
 	@Test
@@ -94,7 +126,9 @@ public class CredentialTest {
 		Assert.assertEquals("userdextra", tokens[0]);
 		Assert.assertEquals("SOCC", tokens[1]);
 		Assert.assertEquals("20110727.123610357", tokens[2]);
-		Assert.assertEquals("MCwCFDDxz4OTYlfc3Dd26QK1USV53miHAhQQS+vxNEPr/51u9jGpBQAwMBFv2g==", tokens[3]);
+		Assert.assertEquals(
+				"MCwCFDDxz4OTYlfc3Dd26QK1USV53miHAhQQS+vxNEPr/51u9jGpBQAwMBFv2g==",
+				tokens[3]);
 	}
 
 	@Test
@@ -106,7 +140,9 @@ public class CredentialTest {
 		Assert.assertEquals("a", tokens[0]);
 		Assert.assertEquals("Services", tokens[1]);
 		Assert.assertEquals("20110706.105225185", tokens[2]);
-		Assert.assertEquals("MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==", tokens[3]);
+		Assert.assertEquals(
+				"MCwCFFN7c9HrHVMe6s7Aru2C54SDxrOxAhRVXgEehy+yjh9L4fbvvH2wT3hq0g==",
+				tokens[3]);
 	}
 
 	@Test
