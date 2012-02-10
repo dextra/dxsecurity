@@ -16,6 +16,20 @@ import br.com.dextra.security.configuration.Configuration;
 import br.com.dextra.security.exceptions.AuthenticationFailedException;
 import br.com.dextra.security.utils.AuthenticationUtil;
 
+/**
+ * The authentication servlet is responsible for validating the user credentials present on the
+ * {@link HttpServletRequest}. The method that does this is {@link #authenticate(HttpServletRequest)}. If a
+ * {@link Credential} is returned from this method a signed token is generated and returned to the client as a cookie.
+ * After that, the {@link Configuration#getAuthenticationSuccessHandler()} is executed.
+ * 
+ * If the authentication fail and the method {@link #authenticate(HttpServletRequest)} throws
+ * {@link AuthenticationFailedException} with the <code>mustShowError</code> parameter with value <code>true</code>, the
+ * cookie is not created and the {@link Configuration#getAuthenticationFailedHandler()} is executed. If the parameter
+ * <code>mustShowError</code> is <code>false</code>, the cookie is also not created and the
+ * {@link Configuration#getNotAuthenticatedHandler()} is executed.
+ * 
+ * @author Fabio Santos (flsusp@gmail.com)
+ */
 public abstract class AuthenticationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -5794836444983032927L;
@@ -86,7 +100,8 @@ public abstract class AuthenticationServlet extends HttpServlet {
 		}
 	}
 
-	protected void sendError(AuthenticationFailedException e, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	protected void sendError(AuthenticationFailedException e, HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
 		if (e.mustShowError()) {
 			configuration.getAuthenticationFailedHandler().sendResponse(req, resp);
 		} else {
@@ -98,7 +113,8 @@ public abstract class AuthenticationServlet extends HttpServlet {
 		configuration.getAuthenticationSuccessHandler().sendResponse(req, resp);
 	}
 
-	public static void createAuthCookie(String token, HttpServletRequest req, HttpServletResponse resp, int cookieExpiryTimeout) {
+	public static void createAuthCookie(String token, HttpServletRequest req, HttpServletResponse resp,
+			int cookieExpiryTimeout) {
 		Cookie authCookie = new Cookie(generateCookieName(), token);
 
 		String path = generateCookiePath(req);
@@ -135,5 +151,16 @@ public abstract class AuthenticationServlet extends HttpServlet {
 		this.configuration = configuration;
 	}
 
+	/**
+	 * This method should be implemented to authenticate the user accordingly to the application's business rules. If
+	 * the authentication fail, this method should throw {@link AuthenticationFailedException}. If the authentication is
+	 * successful a {@link Credential} or a class that extends it should be returned.
+	 * 
+	 * @param req
+	 *            The full HTTP request.
+	 * @return A valid {@link Credential}. It can be a class that extends {@link Credential}.
+	 * @throws AuthenticationFailedException
+	 *             If the authentication fail.
+	 */
 	protected abstract Credential authenticate(HttpServletRequest req) throws AuthenticationFailedException;
 }
