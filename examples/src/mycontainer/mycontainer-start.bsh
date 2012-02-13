@@ -1,0 +1,35 @@
+import org.mycontainer.kernel.*;
+import org.mycontainer.kernel.boot.*;
+import org.mycontainer.kernel.deploy.*;
+import org.mycontainer.ejb.*;
+import org.mycontainer.mail.*;
+import org.mycontainer.jpa.*;
+import org.mycontainer.datasource.*;
+import org.mycontainer.web.*;
+import org.mycontainer.web.jetty.*;
+import org.mycontainer.jms.*;
+
+try {
+	System.setProperty("java.naming.factory.initial", "org.mycontainer.kernel.naming.MyContainerContextFactory");
+
+	builder = new ContainerBuilder();
+	builder.deployVMShutdownHook();
+	SessionInterceptorDeployer sessionInterceptorDeployer = builder.createDeployer(SessionInterceptorDeployer.class);
+	sessionInterceptorDeployer.deploy();
+
+	JettyServerDeployer webServer = builder.createDeployer(JettyServerDeployer.class);
+	webServer.bindPort(8080);
+	webServer.setName("WebServer");
+	
+	ContextWebServer context = webServer.createContextWebServer();
+	context.setContext("/simple_with_filesystemcertificaterepository");
+	context.setResources("simple_with_filesystemcertificaterepository/src/main/webapp/");
+
+	// deploy do servidor web	
+	webServer.deploy();
+
+	builder.waitFor();
+} catch (Exception e) {
+	e.printStackTrace();
+    	throw e;
+}

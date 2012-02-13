@@ -27,8 +27,6 @@ import br.com.dextra.security.utils.AuthenticationUtil;
  * cookie is not created and the {@link Configuration#getAuthenticationFailedHandler()} is executed. If the parameter
  * <code>mustShowError</code> is <code>false</code>, the cookie is also not created and the
  * {@link Configuration#getNotAuthenticatedHandler()} is executed.
- * 
- * @author Fabio Santos (flsusp@gmail.com)
  */
 public abstract class AuthenticationServlet extends HttpServlet {
 
