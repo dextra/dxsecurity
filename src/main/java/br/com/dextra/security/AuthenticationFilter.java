@@ -34,7 +34,7 @@ public class AuthenticationFilter implements Filter {
 
 	private static final String AUTH_REQUEST_PARAMETER = "auth";
 
-	protected Configuration configuration;
+	private Configuration configuration;
 
 	private static final Comparator<? super Cookie> cookieComparator = new Comparator<Cookie>() {
 		@Override
@@ -134,7 +134,10 @@ public class AuthenticationFilter implements Filter {
 	}
 
 	protected boolean expired(Credential credential) {
-		return getToday().getTime() - configuration.getExpiryTimeout() > credential.getTimestamp().getTime();
+		long today = getToday().getTime();
+		long timeout = configuration.getExpiryTimeout();
+		long time = credential.getTimestamp().getTime();
+		return today - timeout > time;
 	}
 
 	protected void deregisterAuthenticationData() {
@@ -237,5 +240,13 @@ public class AuthenticationFilter implements Filter {
 
 	@Override
 	public void destroy() {
+	}
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 }

@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,10 +19,20 @@ import javax.servlet.http.HttpSession;
 public class HttpServletRequestStub implements HttpServletRequest {
 
 	private String contextPath = "";
+	private List<Cookie> cookies = new ArrayList<Cookie>();
 
 	@Override
 	public String getContextPath() {
 		return contextPath;
+	}
+
+	public void addCookie(Cookie cookie) {
+		this.cookies.add(cookie);
+	}
+	
+	@Override
+	public Cookie[] getCookies() {
+		return this.cookies.toArray(new Cookie[0]);
 	}
 
 	@Override
@@ -171,11 +183,6 @@ public class HttpServletRequestStub implements HttpServletRequest {
 
 	@Override
 	public String getAuthType() {
-		return null;
-	}
-
-	@Override
-	public Cookie[] getCookies() {
 		return null;
 	}
 
