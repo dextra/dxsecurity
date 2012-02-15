@@ -37,10 +37,12 @@ public class AuthenticationFilterTest {
 		AuthenticationFilter filter = new AuthenticationFilter();
 		filter.setConfiguration(config);
 
-		HttpServletRequestStub req = new HttpServletRequestStub();
 		Credential credential = new Credential("test", "Test");
-		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), Credential.concatSignature(
-				credential.toString(), AuthenticationUtil.sign(credential, certificateRepository))));
+		String signature = AuthenticationUtil.sign(credential, certificateRepository);
+		credential.setSignature(signature);
+
+		HttpServletRequestStub req = new HttpServletRequestStub();
+		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), credential.toStringFull()));
 		HttpServletResponseStub resp = new HttpServletResponseStub();
 		FilterChainStub chain = new FilterChainStub();
 
@@ -98,10 +100,12 @@ public class AuthenticationFilterTest {
 		AuthenticationFilter filter = new AuthenticationFilter();
 		filter.setConfiguration(config);
 
-		HttpServletRequestStub req = new HttpServletRequestStub();
 		Credential credential = new Credential("test", "OtherProvider");
-		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), Credential.concatSignature(
-				credential.toString(), AuthenticationUtil.sign(credential, certificateRepository))));
+		String signature = AuthenticationUtil.sign(credential, certificateRepository);
+		credential.setSignature(signature);
+
+		HttpServletRequestStub req = new HttpServletRequestStub();
+		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), credential.toStringFull()));
 		HttpServletResponseStub resp = new HttpServletResponseStub();
 		FilterChainStub chain = new FilterChainStub();
 
@@ -129,10 +133,12 @@ public class AuthenticationFilterTest {
 		AuthenticationFilter filter = new AuthenticationFilter();
 		filter.setConfiguration(config);
 
-		HttpServletRequestStub req = new HttpServletRequestStub();
 		Credential credential = new Credential("test", "Test");
-		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), Credential.concatSignature(
-				credential.toString(), AuthenticationUtil.sign(credential, certificateRepository))));
+		String signature = AuthenticationUtil.sign(credential, certificateRepository);
+		credential.setSignature(signature);
+
+		HttpServletRequestStub req = new HttpServletRequestStub();
+		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), credential.toStringFull()));
 		HttpServletResponseStub resp = new HttpServletResponseStub();
 		FilterChainStub chain = new FilterChainStub();
 
@@ -161,20 +167,22 @@ public class AuthenticationFilterTest {
 		AuthenticationFilter filter = new AuthenticationFilter();
 		filter.setConfiguration(config);
 
-		HttpServletRequestStub req = new HttpServletRequestStub();
 		Credential credential = new Credential("test", "Test");
-		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), Credential.concatSignature(
-				credential.toString(), AuthenticationUtil.sign(credential, certificateRepository))));
+		String signature = AuthenticationUtil.sign(credential, certificateRepository);
+		credential.setSignature(signature);
+
+		HttpServletRequestStub req = new HttpServletRequestStub();
+		req.addCookie(new Cookie(AuthenticationServlet.generateCookieName(), credential.toStringFull()));
 		HttpServletResponseStub resp = new HttpServletResponseStub();
 		FilterChainStub chain = new FilterChainStub();
 
-		//Thread.sleep(100);
+		Thread.sleep(100);
 
 		filter.doFilter(req, resp, chain);
 
 		Assert.assertTrue(chain.wasExecuted());
 		Assert.assertEquals(-1, resp.getError());
-		Assert.assertEquals(1, resp.getCookies().size());
+		Assert.assertEquals(2, resp.getCookies().size());
 		Assert.assertTrue(resp.getCookies().iterator().next().getValue().startsWith("test|Test|"));
 	}
 }

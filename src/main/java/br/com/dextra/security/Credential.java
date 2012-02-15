@@ -65,7 +65,7 @@ public class Credential implements Serializable {
 		return token;
 	}
 
-	public String getSignature() {
+	protected String getSignature() {
 		return signature;
 	}
 
@@ -81,7 +81,7 @@ public class Credential implements Serializable {
 		return provider;
 	}
 
-	protected void setSignature(String signature) {
+	public void setSignature(String signature) {
 		this.signature = signature;
 	}
 
@@ -131,9 +131,5 @@ public class Credential implements Serializable {
 		}
 
 		return sb.toString();
-	}
-
-	public static String concatSignature(String token, String signature) {
-		return MessageFormat.format("{0}|{1}", token, signature);
 	}
 }

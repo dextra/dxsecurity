@@ -5,6 +5,38 @@
 
 	<display-name>Example</display-name>
 
+	<context-param>
+		<param-name>security.configuration.bsh</param-name>
+		<param-value>security.bsh</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>br.com.dextra.security.AuthenticationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<url-pattern>/protected/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>ProtectedServlet</servlet-name>
+		<servlet-class>br.com.dextra.security.examples.ProtectedServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProtectedServlet</servlet-name>
+		<url-pattern>/protected/test</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<servlet-class>br.com.dextra.security.FakeUsernameAndPasswordAuthenticationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+
 	<session-config>
 		<session-timeout>60</session-timeout>
 	</session-config>

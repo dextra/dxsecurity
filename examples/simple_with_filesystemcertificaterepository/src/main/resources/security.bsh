@@ -1,0 +1,24 @@
+import br.com.dextra.security.configuration.*;
+import br.com.dextra.security.utils.*;
+import java.io.*;
+
+/*
+	This call to GenerateKeysUtil is used to create new public / private key pairs on the application startup.
+The keys can be created on the startup or can be created manually and used upon several startups (thats probably the
+most useful usecase).
+*/
+GenerateKeysUtil.generateAndStoreKeys("/tmp", "Test");
+new File("/tmp/public").mkdirs();
+new File("/tmp/public.key").renameTo(new File("/tmp/public/Test"));
+
+FileSystemCertificateRepository certificateRepository = new FileSystemCertificateRepository("/tmp/private.key", "/tmp/public");
+configuration.setCertificateRepository(certificateRepository);
+
+configuration.setMyProvider("Test");
+configuration.setNotAuthenticatedHandler(new ForbiddenResponseHandler());
+configuration.setAuthenticationFailedHandler(new ForbiddenResponseHandler());
+configuration.setAuthenticationSuccessHandler(new WriteTokenOnResponseResponseHandler());
+configuration.setAuthenticationExpiredHandler(new ForbiddenResponseHandler());
+configuration.setCookieExpiryTimeout(30 * 60 * 1000);
+configuration.setExpiryTimeout(30 * 60 * 1000);
+configuration.setRenewTimeout(2 * 60 * 1000);

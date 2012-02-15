@@ -116,17 +116,22 @@ public class AuthenticationFilter implements Filter {
 			throws ParseException {
 		credential = credential.renew();
 
-		String token = AuthenticationUtil.sign(credential, configuration.getCertificateRepository());
+		String signature = AuthenticationUtil.sign(credential, configuration.getCertificateRepository());
 
 		logger.info("Authentication token renew to : {}", credential);
 
-		AuthenticationServlet.createAuthCookie(token, request, response, configuration.getCookieExpiryTimeout());
+		credential.setSignature(signature);
+		AuthenticationServlet.createAuthCookie(credential.toStringFull(), request, response,
+				configuration.getCookieExpiryTimeout());
 
-		return Credential.parse(token);
+		return credential;
 	}
 
 	protected boolean mustRenew(Credential auth) {
-		return getToday().getTime() - configuration.getRenewTimeout() > auth.getTimestamp().getTime();
+		final long today = getToday().getTime();
+		final long timeout = configuration.getRenewTimeout();
+		final long time = auth.getTimestamp().getTime();
+		return today - timeout > time;
 	}
 
 	protected Date getToday() {
@@ -134,9 +139,9 @@ public class AuthenticationFilter implements Filter {
 	}
 
 	protected boolean expired(Credential credential) {
-		long today = getToday().getTime();
-		long timeout = configuration.getExpiryTimeout();
-		long time = credential.getTimestamp().getTime();
+		final long today = getToday().getTime();
+		final long timeout = configuration.getExpiryTimeout();
+		final long time = credential.getTimestamp().getTime();
 		return today - timeout > time;
 	}
 

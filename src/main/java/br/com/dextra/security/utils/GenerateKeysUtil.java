@@ -36,14 +36,14 @@ public class GenerateKeysUtil {
 
 		Credential credential = new Credential("user", provider);
 		String signature = AuthenticationUtil.sign(credential, repo);
-		System.out.println(Credential.concatSignature(credential.toString(), signature));
+		credential.setSignature(signature);
+		System.out.println(credential.toStringFull());
 
 		return repo;
 	}
 
 	public static void generateAndStoreKeys(String path, String provider) throws NoSuchAlgorithmException,
 			NoSuchProviderException, IOException {
-
 		StringBase64CertificateRepository repo = generateKeys(provider);
 
 		store(repo.getPublicKeyFor(provider).getEncoded(), path + "/public.key");

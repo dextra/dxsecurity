@@ -82,8 +82,7 @@ public abstract class AuthenticationServlet extends HttpServlet {
 			credential.setSignature(signature);
 			CredentialHolder.register(credential);
 
-			token = Credential.concatSignature(token, signature);
-			createAuthCookie(token, req, resp, configuration.getCookieExpiryTimeout());
+			createAuthCookie(credential.toStringFull(), req, resp, configuration.getCookieExpiryTimeout());
 
 			sendSuccess(token, req, resp);
 		} catch (AuthenticationFailedException e) {

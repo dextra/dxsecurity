@@ -117,7 +117,7 @@ public class FileSystemCertificateRepository implements CertificateRepository {
 			return out.toByteArray();
 		} catch (IOException e) {
 			logger.error(MessageFormat.format("Key not found : {0}", path), e);
-			throw new InvalidKeyPathException();
+			throw new InvalidKeyPathException(path);
 		} finally {
 			if (fis != null) {
 				try {
