@@ -183,6 +183,14 @@ public class AuthenticationFilterTest {
 		Assert.assertTrue(chain.wasExecuted());
 		Assert.assertEquals(-1, resp.getError());
 		Assert.assertEquals(2, resp.getCookies().size());
-		Assert.assertTrue(resp.getCookies().iterator().next().getValue().startsWith("test|Test|"));
+
+		String token = null;
+		for (Cookie cookie : resp.getCookies()) {
+			if (cookie.getValue() != null) {
+				token = cookie.getValue();
+			}
+		}
+		Assert.assertNotNull(token);
+		Assert.assertTrue(token.startsWith("test|Test|"));
 	}
 }
